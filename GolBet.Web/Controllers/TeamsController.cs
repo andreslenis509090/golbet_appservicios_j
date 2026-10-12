@@ -1,10 +1,13 @@
-﻿// GolBet.Web/Controllers/TeamsController.cs 
+﻿// GolBet.Web/Controllers/TeamsController.cs
+using GolBet.Repositories.Data;
 using GolBet.Services.DTOs;
 using GolBet.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GolBet.Web.Controllers;
 
+[Authorize(Roles = DbSeeder.AdminRole)]
 public class TeamsController : Controller
 {
     private readonly ITeamService _teamService;
@@ -12,14 +15,14 @@ public class TeamsController : Controller
     public TeamsController(ITeamService teamService)
         => _teamService = teamService;
 
-    // GET /Teams 
+    // GET /Teams
     public async Task<IActionResult> Index()
         => View(await _teamService.GetAllAsync());
 
-    // GET /Teams/Create 
+    // GET /Teams/Create
     public IActionResult Create() => View(new TeamFormDto());
 
-    // POST /Teams/Create 
+    // POST /Teams/Create
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(TeamFormDto dto)
     {
@@ -27,10 +30,10 @@ public class TeamsController : Controller
 
         await _teamService.CreateAsync(dto);
         TempData["Success"] = $"Equipo «{dto.Name}» creado correctamente.";
-        return RedirectToAction(nameof(Index));       // PRG 
+        return RedirectToAction(nameof(Index));       // PRG
     }
 
-    // GET /Teams/Edit/5 
+    // GET /Teams/Edit/5
     public async Task<IActionResult> Edit(int id)
     {
         var dto = await _teamService.GetForEditAsync(id);
@@ -38,7 +41,7 @@ public class TeamsController : Controller
         return View(dto);
     }
 
-    // POST /Teams/Edit 
+    // POST /Teams/Edit
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(TeamFormDto dto)
     {
@@ -49,7 +52,7 @@ public class TeamsController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    // POST /Teams/Deactivate/5 
+    // POST /Teams/Deactivate/5
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Deactivate(int id)
     {
