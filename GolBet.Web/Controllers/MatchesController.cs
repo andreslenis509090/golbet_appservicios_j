@@ -2,6 +2,7 @@
 using GolBet.Entities.Enums;
 using GolBet.Repositories.Data;
 using GolBet.Services.DTOs;
+using GolBet.Services.Implementations;
 using GolBet.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,6 @@ public class MatchesController : Controller
 {
     private readonly IMatchService _matchService;
     private readonly ITeamService _teamService;
-
     public MatchesController(IMatchService matchService, ITeamService teamService)
     {
         _matchService = matchService;
@@ -22,10 +22,13 @@ public class MatchesController : Controller
 
     // GET /Matches            -> all matches
     // GET /Matches?status=Scheduled -> filtered board
-    public async Task<IActionResult> Index(MatchStatus? status)
+    // GET /Matches?search=nacional  -> board filtered by team name
+    // GET /Matches?status=Scheduled&search=nacional -> both combined
+    public async Task<IActionResult> Index(MatchStatus? status, string? search)
     {
         ViewBag.CurrentStatus = status;
-        var board = await _matchService.GetBoardAsync(status);
+        ViewBag.CurrentSearch = search;
+        var board = await _matchService.GetBoardAsync(status, search);
         return View(board);
     }
 
@@ -37,7 +40,6 @@ public class MatchesController : Controller
 
         return View(match);
     }
-
     [Authorize(Roles = DbSeeder.AdminRole)]
     // GET /Matches/Create
     public async Task<IActionResult> Create()
@@ -45,7 +47,6 @@ public class MatchesController : Controller
         await LoadTeamsAsync();
         return View(new MatchFormDto());
     }
-
     [Authorize(Roles = DbSeeder.AdminRole)]
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(MatchFormDto dto)
@@ -69,7 +70,6 @@ public class MatchesController : Controller
             return View(dto);
         }
     }
-
     [Authorize(Roles = DbSeeder.AdminRole)]
     // GET /Matches/Edit/5
     public async Task<IActionResult> Edit(int id)
@@ -80,7 +80,6 @@ public class MatchesController : Controller
         await LoadTeamsAsync(); // the form needs the dropdowns too
         return View(dto);
     }
-
     [Authorize(Roles = DbSeeder.AdminRole)]
     // POST /Matches/Edit
     [HttpPost, ValidateAntiForgeryToken]
@@ -105,7 +104,6 @@ public class MatchesController : Controller
             return View(dto);
         }
     }
-
     [Authorize(Roles = DbSeeder.AdminRole)]
     // POST /Matches/Deactivate/5
     [HttpPost, ValidateAntiForgeryToken]
@@ -121,4 +119,5 @@ public class MatchesController : Controller
         var teams = await _teamService.GetAllAsync();
         ViewBag.Teams = new SelectList(teams, "Id", "Name");
     }
+
 }
