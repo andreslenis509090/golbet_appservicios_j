@@ -30,7 +30,7 @@ public class MatchService : IMatchService
         var match = await _matchRepository.GetByIdWithDetailsAsync(id);
         return match is null ? null : _mapper.Map<MatchDetailDto>(match);
     }
-    // GolBet.Services/Implementations/MatchService.cs  (agregar)
+    // GolBet.Services/Implementations/MatchService.cs (agregar)
     public async Task<MatchFormDto?> GetForEditAsync(int id)
     {
         var match = await _matchRepository.GetByIdAsync(id);
@@ -76,6 +76,5 @@ public class MatchService : IMatchService
             throw new InvalidOperationException(
                 "La fecha del partido debe ser futura.");
     }
-
 
 }

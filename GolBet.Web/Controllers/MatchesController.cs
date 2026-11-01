@@ -20,10 +20,11 @@ public class MatchesController : Controller
         _teamService = teamService;
     }
 
-    // GET /Matches            -> all matches
+    // GET /Matches -> all matches
     // GET /Matches?status=Scheduled -> filtered board
-    // GET /Matches?search=nacional  -> board filtered by team name
-    // GET /Matches?status=Scheduled&search=nacional -> both combined
+    // GET /Matches?search=TeamName  -> board by name
+    // GET /Matches?status=Scheduled&search -> mix
+    //
     public async Task<IActionResult> Index(MatchStatus? status, string? search)
     {
         ViewBag.CurrentStatus = status;

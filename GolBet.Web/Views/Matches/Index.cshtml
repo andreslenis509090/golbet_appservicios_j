@@ -10,7 +10,7 @@
     var search = (string?)ViewBag.CurrentSearch;
 }
 
-@* Search form: GET to search (/Matches?search=something) *@
+@* Search form GET to search (/Matches?search=something) *@
 <form asp-action="Index" method="get" class="d-flex gap-2 mb-3">
     @if (current is not null)
     {
@@ -54,7 +54,7 @@
         <div class="fs-1">🔍</div>
         @if (!string.IsNullOrWhiteSpace(search))
         {
-            <h4>No se han encontrado partidos de “@search”</h4>
+            <h4>No se han encontrado partidos de “@search”</h4> // not found
             <p class="text-muted">Revisa que el nombre del equipo haya sido el correcto.</p>
         }
         <a asp-action="Index" class="btn btn-success mt-2">Retornar a cartelera</a>

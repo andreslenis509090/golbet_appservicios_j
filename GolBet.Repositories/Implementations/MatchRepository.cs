@@ -19,7 +19,7 @@ public class MatchRepository : GenericRepository<Match>, IMatchRepository
             .AsQueryable();
         if (status.HasValue)
             query = query.Where(m => m.Status == status.Value);
-        //added It was added for the search engine.
+        //added to search
         if (!string.IsNullOrWhiteSpace(search))
         {
             var term = search.Trim().ToLower();
